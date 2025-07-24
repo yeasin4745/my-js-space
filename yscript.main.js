@@ -1,46 +1,115 @@
-// yscript.main.js
+/* Array Prototypes */
+Array.prototype.squareSum = function () {
+  return this.reduce((acc, val) => acc + val ** 2, 0);
+};
 
-// ✅ 1. cubeSum: sum of cubes of array elements
 Array.prototype.cubeSum = function () {
   return this.reduce((acc, val) => acc + val ** 3, 0);
 };
 
-// ✅ 2. evenOnly: filter only even numbers
 Array.prototype.evenOnly = function () {
-  return this.filter(num => typeof num === 'number' && num % 2 === 0);
+  return this.filter(item => item % 2 === 0);
 };
 
-// ✅ 3. factorial: simple factorial calculator
-function factorial(n) {
-  if (typeof n !== 'number' || n < 0) throw new Error("Invalid input");
-  return n <= 1 ? 1 : n * factorial(n - 1);
-}
+Array.prototype.reverseSort = function () {
+  return [...this].sort((a, b) => b - a);
+};
 
-// ✅ 4. deepKeys: extract all keys from nested object
-function deepKeys(obj, prefix = '') {
-  if (typeof obj !== 'object' || obj === null) return [];
-  return Object.entries(obj).flatMap(([key, value]) => {
-    const fullKey = prefix ? `${prefix}.${key}` : key;
-    return typeof value === 'object' ? [fullKey, ...deepKeys(value, fullKey)] : [fullKey];
-  });
-}
+Array.prototype.max = function () {
+  return this.reduce((acc, val) => acc > val ? acc : val);
+};
 
-// ✅ 5. YScript: Toy DSL compiler → runs limited commands
-function YScript(input) {
-  try {
-    const lines = input.split('\n').map(l => l.trim()).filter(Boolean);
-    lines.forEach(line => {
-      if (line.startsWith('print ')) {
-        const toPrint = line.replace('print ', '');
-        console.log(eval(toPrint));
-      } else if (line.startsWith('let ')) {
-        const exec = line.replace('let ', 'var ');
-        eval(exec);
-      } else {
-        eval(line);
-      }
-    });
-  } catch (err) {
-    console.error('YScript Error:', err.message);
+Array.prototype.shuffle = function () {
+  return this.sort(() => Math.random() - 0.5);
+};
+
+/* String Prototypes */
+String.prototype.capitalize = function () {
+  return this.split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+};
+
+String.prototype.reverseLettersOnly = function () {
+  return this.split(' ')
+    .map(w => w.split('').reverse().join(''))
+    .join(' ');
+};
+
+String.prototype.reverseWordsOnly = function () {
+  return this.split(' ').reverse().join(' ');
+};
+
+String.prototype.reverseComplex = function () {
+  return this.split(' ')
+    .map(w => w.split('').reverse().join(''))
+    .reverse()
+    .join(' ');
+};
+
+String.prototype.toSarcasm = function () {
+  return this.split('')
+    .map((char, i) => (i % 2 ? char.toUpperCase() : char.toLowerCase()))
+    .join('');
+};
+
+String.prototype.letterCount = function () {
+  return this.replace(/[^a-zA-Z]/g, '').length;
+};
+
+String.prototype.wordCount = function (type = 'all') {
+  if (type === 'lettersOnly') {
+    return this.replace(/[^A-Za-z]/g, ' ')
+      .split(' ')
+      .filter(Boolean).length;
   }
-}
+  return this.trim().split(/\s+/).filter(Boolean).length;
+};
+
+/* Object Prototypes */
+Object.prototype.isEmpty = function () {
+  return Object.keys(this).length === 0;
+};
+
+Object.prototype.invert = function () {
+  const result = {};
+  for (let key in this) {
+    if (this.hasOwnProperty(key)) {
+      result[this[key]] = key;
+    }
+  }
+  return result;
+};
+
+Object.prototype.deepClon = function () {
+  return JSON.parse(JSON.stringify(this));
+};
+
+Object.prototype.countValues = function (type) {
+  return Object.values(this).filter(val => typeof val === type).length;
+};
+
+Object.prototype.cleanFalsy = function () {
+  const result = {};
+  for (let key in this) {
+    if (this.hasOwnProperty(key) && this[key]) {
+      result[key] = this[key];
+    }
+  }
+  return result;
+};
+
+Object.prototype.findByType = function (...types) {
+  const result = {};
+  for (let key in this) {
+    if (this.hasOwnProperty(key) && types.includes(typeof this[key])) {
+      result[key] = this[key];
+    }
+  }
+  return result;
+};
+
+/* Global Shortcut */
+window.log = function (...value) {
+  console.log(...value);
+};
